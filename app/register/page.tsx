@@ -10,6 +10,7 @@ const Register = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading,setLoading]=useState<boolean>(false)
     const router = useRouter();
 
     interface ApiResponse {
@@ -17,6 +18,7 @@ const Register = () => {
     }
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true)
         try {
             const result = await axios.post("/api/auth/register", {
                 name,
@@ -26,12 +28,14 @@ const Register = () => {
             console.log(result.data);
             toast.success("🎉 SuccessFully Registered");
             router.push('/login')
+            setLoading(false)
         } catch (error) {
             console.log(error);
             const axiosError = error as AxiosError<ApiResponse>;
             toast.error(
                 axiosError.response?.data?.message || "Registration failed"
             );
+            setLoading(false)
         }
         setName("");
         setEmail("");
@@ -103,8 +107,8 @@ const Register = () => {
                             login
                         </span>
                     </p>
-                    <button className="w-full bg-purple-950 p-2 rounded-md text-white font-semibold transition-all ease-in-out active:scale-95 duration-150 ">
-                        Register
+                    <button className={`w-full  ${loading?'bg-gray-600':'bg-purple-950'} p-2 rounded-md text-white font-semibold transition-all ease-in-out active:scale-95 duration-150  `} disabled={laoding}>
+                        {loading? 'SigningUp...':'Register'}
                     </button>
                 </form>
                 <div className="flex items-center gap-1.25 justify-center">

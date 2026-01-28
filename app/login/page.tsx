@@ -11,10 +11,12 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const router = useRouter();
     const session =useSession()
+    const [loading,setLoading]=useState<boolean>(false)
    console.log(session?.data?.user);
    
     const handleSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true)
         try {
             //SignIn function next ka apna ha , isko bs provider btana prta ha
             const result = await signIn("credentials", {
@@ -30,8 +32,10 @@ const Login = () => {
             }
             toast.success("successfully logged in");
             router.push('/')
+            setLoading(false)
         } catch (error) {
             console.log(error);
+            setLoading(false)
         }
     };
 
@@ -84,8 +88,8 @@ const Login = () => {
                             SignUp now
                         </span>
                     </p>
-                    <button className="w-full bg-purple-950 p-2 rounded-md text-white font-semibold transition-all ease-in-out active:scale-95 duration-150 ">
-                        Login
+                    <button className={`w-full ${loading? 'bg-gray-600':'bg-purple-950'}  p-2 rounded-md text-white font-semibold transition-all ease-in-out active:scale-95 duration-150 `} disabled={loading}>
+                        {loading? 'Signing In...':'Login'}
                     </button>
                 </form>
                 <div className="flex items-center gap-1.25 justify-center">
